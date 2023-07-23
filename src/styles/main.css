@@ -1,15 +1,16 @@
 @import './markdown.css';
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap');
 
 :root {
   --background: #edf1F5;
   --button: #202020;
   --button-color: #fafafa;
-  --button-radius: .6rem;
+  --button-radius: 1rem;
   --card-background: #fff;
   --item-active: #02a9ff;
   --item-background: #edf1F5;
   --item-hover: #d6e0ef;
-  --item-radius: .5rem;
+  --item-radius: 1.2rem;
   --shadow: 0 0 2.5rem rgb(0 0 0 / 10%);
 }
 
@@ -29,7 +30,9 @@ body {
 html,
 body,
 #app {
+  font-family: 'Fredoka', sans-serif, -apple-system, blinkmacsystemfont, "Segoe UI", roboto, helvetica, arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   height: 100%;
+  letter-spacing: .04rem;
   margin: 0;
   padding: 0;
 }
@@ -50,15 +53,33 @@ html.dark {
 
 #nprogress .bar {
   background: rgb(37, 124, 255);
+  height: .2rem;
+  left: 0;
   opacity: 0.75;
   position: fixed;
-  z-index: 1031;
   top: 0;
-  left: 0;
   width: 100%;
-  height: .2rem;
+  z-index: 1031;
 }
 
 main {
   padding: 5rem 0;
+}
+
+span {
+  display: block;
+}
+
+input[type="search"] {
+  border: none;
+  border-radius: var(--item-radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  margin: auto;
+  padding: 1.2rem 2rem;
+  width: 50%;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  cursor: pointer;
 }

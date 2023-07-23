@@ -1,7 +1,6 @@
 <script setup>
-const { pokemon, typeColors, pokemonList } = defineProps(['pokemon', 'typeColors', 'pokemonList'])
+const { pokemon, typeColors } = defineProps(['pokemon', 'typeColors'])
 
-// Stat name translations
 const statTranslations = {
   'hp': 'PV',
   'attack': 'Attaque',
@@ -12,84 +11,99 @@ const statTranslations = {
 }
 
 function getTranslatedStatName(statName) {
-  return statTranslations[statName] || statName // Return the translated name if available, otherwise the original name
+  return statTranslations[statName] || statName
 }
 
-// Calculate total stats
 function getTotalStats() {
   return pokemon.stats.reduce((total, stat) => total + stat.value, 0)
-}
-
-// Function to get the sprite URL for a given species name
-function getEvolutionSprite(speciesName) {
-  const foundPokemon = pokemonList.find(pokemon => pokemon.name === speciesName)
-  if (foundPokemon && foundPokemon.sprites && foundPokemon.sprites.front_default)
-    return foundPokemon.sprites.front_default
-
-  return '' // Return an empty string if the species or sprites are not found in the pokemonList
 }
 </script>
 
 <template>
-  <div class="modal">
-    <div class="pokemon-details">
-      <div class="img-container">
-        <img :src="pokemon.animatedSprite" alt="pokemon sprite">
-      </div>
-      <p>#{{ pokemon.pokedexNumber }}</p>
-      <h2>{{ pokemon.species }}</h2>
+  <div class="pokemon-details">
+    <div class="img-container">
+      <img class="sprite" :src="pokemon.animatedSprite" alt="pokemon sprite">
+    </div>
+    <span class="number">#{{ pokemon.pokedexNumber }}</span>
+    <span class="name">{{ pokemon.species }} - {{ pokemon.name }}</span>
 
+    <div class="types-container">
       <div class="pokemon-types">
         <span
           v-for="type in pokemon.types"
           :key="type.french"
-          :style="{ backgroundColor: typeColors[type.english.toLowerCase()] }"
+          :style="{ background: typeColors[type.english.toLowerCase()] }"
           class="type"
         >
           {{ type.french }}
         </span>
       </div>
+    </div>
 
-      <p>Anglais :{{ pokemon.name }}</p>
+    <div class="description-container">
+      <p class="description">
+        {{ pokemon.description }}
+      </p>
+    </div>
 
-      <span
-        v-for="abilities in pokemon.abilities"
-        :key="abilities.name"
-      >
-        {{ abilities }}
-      </span>
+    <div class="category-container">
+      <span class="title">Categories</span>
+      <div class="pokemon-category">
+        <span class="category">{{ pokemon.category }}</span>
+      </div>
+    </div>
 
-      <p>Taille :{{ pokemon.height }} Mètres</p>
-      <p>Poids :{{ pokemon.weight }} Kilos</p>
-      <p>{{ pokemon.description }}</p>
+    <div class="abilities-container">
+      <span class="title">Compétences</span>
+      <div class="pokemon-abilities">
+        <span
+          v-for="abilities in pokemon.abilities"
+          :key="abilities.name"
+          class="abilities"
+        >
+          {{ abilities }}
+        </span>
+      </div>
+    </div>
 
-      <!-- Display Pokémon Stats -->
+    <div class="info-container">
+      <div class="pokemon-info">
+        <div class="size">
+          <span class="title">Taille</span>
+          <span class="height-value">{{ pokemon.height }} Mètres</span>
+        </div>
+        <div class="weight">
+          <span class="title">Poids</span>
+          <span class="weight-value">{{ pokemon.weight }} Kilos</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-container">
+      <span class="title">Statistiques</span>
       <div class="pokemon-stats">
-        <h3>Stats:</h3>
-        <div v-for="stat in pokemon.stats" :key="stat.name">
-          <span class="stat-name">{{ getTranslatedStatName(stat.name) }}:</span>
+        <div v-for="stat in pokemon.stats" :key="stat.name" class="stats">
+          <span class="stat-name">{{ getTranslatedStatName(stat.name) }}</span>
           <span class="stat-value">{{ stat.value }}</span>
         </div>
         <div class="total-stats">
-          <span class="total-label">Total:</span>
+          <span class="total-label">Total</span>
           <span class="total-value">{{ getTotalStats() }}</span>
         </div>
       </div>
+    </div>
 
-      <!-- Display Pokémon Evolution -->
+    <div class="evolution-container">
       <div class="pokemon-evolution">
         <h3>Evolution:</h3>
         <div v-for="evolutionStep in pokemon.evolution" :key="evolutionStep.speciesName">
-          <img :src="getEvolutionSprite(evolutionStep.speciesName)" :alt="evolutionStep.speciesName">
+          <img src="" alt="">
           <p v-if="evolutionStep.minLevel">
             Level {{ evolutionStep.minLevel }}
+            {{ evolutionStep.speciesName }}
           </p>
         </div>
       </div>
-
-      <button @click="selectedPokemon = null">
-        Fermer
-      </button>
     </div>
   </div>
 </template>

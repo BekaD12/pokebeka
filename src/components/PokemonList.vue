@@ -6,25 +6,25 @@ const pokemonList = ref([])
 const selectedPokemon = ref(null)
 
 const typeColors = {
-  normal: '#bcbcac',
-  fighting: '#bc5442',
-  flying: '#669aff',
-  poison: '#ab549a',
-  ground: '#debc54',
-  rock: '#bcac66',
-  bug: '#abbc1c',
-  ghost: '#6666bc',
-  steel: '#abacbc',
-  fire: '#ff421c',
-  water: '#2f9aff',
-  grass: '#78cd54',
-  electric: '#ffcd30',
-  psychic: '#ff549a',
-  ice: '#78deff',
-  dragon: '#7866ef',
-  dark: '#785442',
-  fairy: '#ffacff',
+  bug: '#729f3f',
+  dark: '#707070',
+  dragon: 'linear-gradient(180deg, #53a4cf 50%, #f16e57 50%)',
+  electric: '#eed535',
+  fairy: '#fdb9e9',
+  fighting: '#d56723',
+  fire: '#fd7d24',
+  flying: 'linear-gradient(180deg, #3dc7ef 50%, #bdb9b8 50%)',
+  ghost: '#7b62a3',
+  grass: '#9dca5d',
+  ground: 'linear-gradient(180deg, #f7de3f 50%, #ab9842 50%)',
+  ice: '#51c4e7',
+  normal: '#a4acaf',
+  poison: '#b97fc9',
+  psychic: '#f366b9',
+  rock: '#a38c21',
   shadow: '#0e2e4c',
+  steel: '#9eb7b8',
+  water: '#4592c4',
 }
 
 async function fetchPokemonData(pokemon) {
@@ -81,17 +81,18 @@ async function fetchPokemonData(pokemon) {
 
   return {
     pokedexNumber: data.id,
-    name: data.name,
+    name: getLanguage(speciesData.names, 'en').name,
     sprite: data.sprites.front_default,
     animatedSprite: data.sprites.versions['generation-v']['black-white'].animated.front_default,
     species: getLanguage(speciesData.names).name,
     description: getLanguage(speciesData.flavor_text_entries, 'fr').flavor_text,
     types,
-    height: data.height,
-    weight: data.weight,
+    height: data.height / 10,
+    weight: data.weight / 10,
     abilities,
     stats,
     evolution,
+    category: getLanguage(speciesData.genera)?.genus,
   }
 }
 
@@ -148,46 +149,41 @@ function getLanguage(arr, lang = 'fr') {
 }
 
 onMounted(async () => {
-  const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151')
+  const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=25')
   const data = await response.json()
   const mappedData = await Promise.all(data.results.map(fetchPokemonData))
   pokemonList.value = mappedData
+  selectedPokemon.value = pokemonList.value.find(pokemon => pokemon.pokedexNumber === 25) || null
 })
 </script>
 
 <template>
-  <input
-    v-model="searchQuery"
-    type="text"
-    placeholder="Search Pokémon"
-  >
+  <div class="search-container">
+    <input v-model="searchQuery" type="search" placeholder="Search Pokémon">
+  </div>
 
-  <main>
+  <main class="pokemon-container">
     <div class="pokemon-grid">
-      <div v-for="pokemon in filteredPokemonList" :key="pokemon.name" class="pokemon" @click="showPokemonDetails(pokemon)">
-        <img
-          class="sprite"
-          :src="pokemon.sprite"
-          alt="pokemon sprite"
-        >
-        <span class="name">{{ pokemon.species }} / {{ pokemon.name }}</span>
-        <span class="number">Pokédex Number: #{{ pokemon.pokedexNumber }}</span>
+      <div
+        v-for="pokemon in filteredPokemonList" :key="pokemon.name" class="pokemon"
+        @click="showPokemonDetails(pokemon)"
+      >
+        <img class="sprite" :src="pokemon.sprite" alt="pokemon sprite">
+        <span class="name">{{ pokemon.species }}</span>
+        <span class="number">No. {{ pokemon.pokedexNumber }}</span>
 
-        <div class="pokemon-types">
-          <span
-            v-for="type in pokemon.types"
-            :key="type.french"
-            :style="{ backgroundColor: typeColors[type.english.toLowerCase()] }"
-            class="type"
-          >
-            {{ type.french }}
-          </span>
+        <div class="types-container">
+          <div class="pokemon-types">
+            <span v-for="type in pokemon.types" :key="type.french" :style="{ background: typeColors[type.english.toLowerCase()] }" class="type">
+              {{ type.french }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
 
-    <div v-if="selectedPokemon" class="modal-container">
-      <pokemon-details :pokemon="selectedPokemon" :type-colors="typeColors" :pokemon-list="pokemonList" />
+    <div v-if="selectedPokemon" class="details-container">
+      <pokemon-details :pokemon="selectedPokemon" :type-colors="typeColors" />
     </div>
   </main>
 </template>
