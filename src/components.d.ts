@@ -7,13 +7,14 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    Header: typeof import('./components/Header.vue')['default']
     PokemonDetails: typeof import('./components/PokemonDetails.vue')['default']
+    PokemonDetailsSkeleton: typeof import('./components/PokemonDetailsSkeleton.vue')['default']
     PokemonList: typeof import('./components/PokemonList.vue')['default']
     README: typeof import('./components/README.md')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TheCounter: typeof import('./components/TheCounter.vue')['default']
     TheFooter: typeof import('./components/TheFooter.vue')['default']
-    TheInput: typeof import('./components/TheInput.vue')['default']
   }
 }

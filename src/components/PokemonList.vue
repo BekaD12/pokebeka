@@ -1,9 +1,9 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 
-const searchQuery = ref('')
 const pokemonList = ref([])
 const selectedPokemon = ref(null)
+const isLoading = ref(false)
 
 const typeColors = {
   bug: '#729f3f',
@@ -27,13 +27,57 @@ const typeColors = {
   water: '#4592c4',
 }
 
-async function fetchPokemonData(pokemon) {
-  const response = await fetch(pokemon.url)
+function getLanguage(arr, lang = 'fr') {
+  return arr.find(item => item.language.name === lang)
+}
+
+async function fetchPokemonList() {
+  const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1010')
+  const data = await response.json()
+  pokemonList.value = data.results.map(pokemon => ({
+    pokedexNumber: getIdFromUrl(pokemon.url),
+    id: getIdFromUrl(pokemon.url),
+    name: pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1),
+    sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getIdFromUrl(pokemon.url)}.png`, // Add the sprite URL here
+  }))
+
+  // Select random by default
+  const randomNumber = Math.floor(Math.random() * (900 - 1 + 1)) + 1
+  const defaultPokemon = pokemonList.value.find(pokemon => pokemon.id === randomNumber)
+  if (defaultPokemon)
+    fetchPokemonDetails(defaultPokemon)
+}
+
+async function fetchPokemonDetails(pokemon) {
+  // isLoading.value = true // Set loading state to false after fetching data
+  // Fetch species details first
+  const speciesResponse = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemon.id}`)
+  const speciesData = await speciesResponse.json()
+
+  // Find the French description from species details
+  const frenchDescription = getLanguage(speciesData.flavor_text_entries, 'fr')
+
+  // Fetch the full details of the selected Pokemon
+  const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.id}`)
   const data = await response.json()
 
-  // Fetch the species data for French display
-  const speciesResponse = await fetch(data.species.url)
-  const speciesData = await speciesResponse.json()
+  const stats = data.stats.map((stat) => {
+    return {
+      name: stat.stat.name,
+      value: stat.base_stat,
+    }
+  })
+
+  const abilitiesData = await Promise.all(
+    data.abilities.map(async (ability) => {
+      const response = await fetch(ability.ability.url)
+      return response.json()
+    }),
+  )
+  const abilities = abilitiesData.map((abilityData) => {
+    const name = getLanguage(abilityData.names, 'fr').name
+    return name
+  })
 
   // Fetch the types in French and English
   const typesData = await Promise.all(
@@ -50,110 +94,47 @@ async function fetchPokemonData(pokemon) {
     return { french: frenchName, english: englishName }
   })
 
-  // Fetch abilities
-  const abilitiesData = await Promise.all(
-    data.abilities.map(async (ability) => {
-      const response = await fetch(ability.ability.url)
-      return response.json()
-    }),
-  )
+  const animatedSprite = data.sprites.versions['generation-v']['black-white'].animated.front_default
+  const normalSprite = data.sprites.front_default
 
-  const abilities = abilitiesData.map((abilityData) => {
-    const name = getLanguage(abilityData.names, 'fr').name
-    return name
-  })
-
-  // Fetch stats
-  const stats = data.stats.map((stat) => {
-    return {
-      name: stat.stat.name,
-      value: stat.base_stat,
-    }
-  })
-
-  // Fetch evolution data if available
-  let evolution = null
-  if (speciesData.evolution_chain) {
-    const evolutionChainResponse = await fetch(speciesData.evolution_chain.url)
-    const evolutionChainData = await evolutionChainResponse.json()
-    evolution = extractEvolutionData(evolutionChainData)
-  }
-
-  return {
+  selectedPokemon.value = {
+    ...pokemon,
+    animatedSprite: animatedSprite || normalSprite,
     pokedexNumber: data.id,
-    name: getLanguage(speciesData.names, 'en').name,
-    sprite: data.sprites.front_default,
-    animatedSprite: data.sprites.versions['generation-v']['black-white'].animated.front_default,
-    species: getLanguage(speciesData.names).name,
-    description: getLanguage(speciesData.flavor_text_entries, 'fr').flavor_text,
-    types,
     height: data.height / 10,
     weight: data.weight / 10,
-    abilities,
+    description: frenchDescription ? frenchDescription.flavor_text : '',
+    species: getLanguage(speciesData.names).name,
     stats,
-    evolution,
     category: getLanguage(speciesData.genera)?.genus,
+    abilities,
+    types,
   }
 }
 
-function extractEvolutionData(evolutionChainData) {
-  const evolutionData = []
-
-  const traverseEvolutionChain = (chain) => {
-    if (!chain)
-      return
-
-    const speciesName = chain.species.name
-    const minLevel = chain.evolution_details[0]?.min_level || null
-
-    evolutionData.push({ speciesName, minLevel })
-
-    // Handle branching evolution paths if available
-    if (chain.evolves_to.length > 1) {
-      chain.evolves_to.forEach((branch) => {
-        traverseEvolutionChain(branch)
-      })
-    }
-    else {
-      traverseEvolutionChain(chain.evolves_to[0])
-    }
-  }
-
-  traverseEvolutionChain(evolutionChainData.chain)
-
-  return evolutionData
+function selectPokemon(pokemon) {
+  fetchPokemonDetails(pokemon)
 }
+
+function getIdFromUrl(url) {
+  const parts = url.split('/')
+  return Number.parseInt(parts[parts.length - 2])
+}
+
+const searchQuery = ref('')
 
 const filteredPokemonList = computed(() => {
-  const query = searchQuery.value.trim().toLowerCase()
-  if (!query)
-    return pokemonList.value
-
-  return pokemonList.value.filter((pokemon) => {
-    const nameMatch = pokemon.species.toLowerCase().includes(query)
-    const typeMatch = pokemon.types.some(
-      type => type.french.toLowerCase().includes(query) || type.english.toLowerCase().includes(query),
-    )
-    const numberMatch = pokemon.pokedexNumber.toString().includes(query)
-
-    return nameMatch || typeMatch || numberMatch
-  })
+  const query = searchQuery.value.toLowerCase()
+  return pokemonList.value.filter(
+    pokemon =>
+      pokemon.name.toLowerCase().includes(query)
+      || pokemon.pokedexNumber.toString().includes(query),
+    // || pokemon.types.some(type => type.french.toLowerCase().includes(query)),
+  )
 })
 
-function showPokemonDetails(pokemon) {
-  selectedPokemon.value = pokemon
-}
-
-function getLanguage(arr, lang = 'fr') {
-  return arr.find(item => item.language.name === lang)
-}
-
-onMounted(async () => {
-  const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=25')
-  const data = await response.json()
-  const mappedData = await Promise.all(data.results.map(fetchPokemonData))
-  pokemonList.value = mappedData
-  selectedPokemon.value = pokemonList.value.find(pokemon => pokemon.pokedexNumber === 25) || null
+onMounted(() => {
+  fetchPokemonList()
 })
 </script>
 
@@ -164,22 +145,27 @@ onMounted(async () => {
 
   <main class="pokemon-container">
     <div class="pokemon-grid">
-      <div
-        v-for="pokemon in filteredPokemonList" :key="pokemon.name" class="pokemon"
-        @click="showPokemonDetails(pokemon)"
-      >
+      <div v-for="pokemon in filteredPokemonList" :key="pokemon.name" class="pokemon" @click="selectPokemon(pokemon)">
         <img class="sprite" :src="pokemon.sprite" alt="pokemon sprite">
-        <span class="name">{{ pokemon.species }}</span>
+        <span class="name">{{ pokemon.name }}</span>
         <span class="number">No. {{ pokemon.pokedexNumber }}</span>
 
         <div class="types-container">
           <div class="pokemon-types">
-            <span v-for="type in pokemon.types" :key="type.french" :style="{ background: typeColors[type.english.toLowerCase()] }" class="type">
+            <span
+              v-for="type in pokemon.types" :key="type.french"
+              :style="{ background: typeColors[type.english.toLowerCase()] }"
+              class="type"
+            >
               {{ type.french }}
             </span>
           </div>
         </div>
       </div>
+    </div>
+
+    <div v-if="isLoading" class="details-container">
+      <pokemon-details-skeleton :pokemon="selectedPokemon" :type-colors="typeColors" />
     </div>
 
     <div v-if="selectedPokemon" class="details-container">

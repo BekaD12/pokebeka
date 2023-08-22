@@ -1,17 +1,21 @@
 <script setup>
 const { pokemon, typeColors } = defineProps(['pokemon', 'typeColors'])
 
-const statTranslations = {
-  'hp': 'PV',
-  'attack': 'Attaque',
-  'defense': 'Défense',
-  'special-attack': 'Attaque Spéciale',
-  'special-defense': 'Défense Spéciale',
-  'speed': 'Vitesse',
+const statData = {
+  'hp': { translation: 'pv', color: '#ff0000' },
+  'attack': { translation: 'atk', color: '#f08030' },
+  'defense': { translation: 'def', color: '#f8d030' },
+  'special-attack': { translation: 'spa', color: '#6890f0' },
+  'special-defense': { translation: 'spd', color: '#78c850' },
+  'speed': { translation: 'spd', color: '#f85888' },
 }
 
 function getTranslatedStatName(statName) {
-  return statTranslations[statName] || statName
+  return statData[statName]?.translation || statName
+}
+
+function getStatColor(statName) {
+  return statData[statName]?.color || '#000000'
 }
 
 function getTotalStats() {
@@ -83,27 +87,18 @@ function getTotalStats() {
       <span class="title">Statistiques</span>
       <div class="pokemon-stats">
         <div v-for="stat in pokemon.stats" :key="stat.name" class="stats">
-          <span class="stat-name">{{ getTranslatedStatName(stat.name) }}</span>
+          <span :style="{ background: getStatColor(stat.name) }" class="stat-name">{{ getTranslatedStatName(stat.name) }}</span>
           <span class="stat-value">{{ stat.value }}</span>
         </div>
         <div class="total-stats">
-          <span class="total-label">Total</span>
+          <span class="total-label">TOT</span>
           <span class="total-value">{{ getTotalStats() }}</span>
         </div>
       </div>
     </div>
 
     <div class="evolution-container">
-      <div class="pokemon-evolution">
-        <h3>Evolution:</h3>
-        <div v-for="evolutionStep in pokemon.evolution" :key="evolutionStep.speciesName">
-          <img src="" alt="">
-          <p v-if="evolutionStep.minLevel">
-            Level {{ evolutionStep.minLevel }}
-            {{ evolutionStep.speciesName }}
-          </p>
-        </div>
-      </div>
+      <div class="pokemon-evolution" />
     </div>
   </div>
 </template>
