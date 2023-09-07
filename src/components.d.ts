@@ -8,11 +8,15 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Detailstestbeforeenglishswap: typeof import('./components/detailstestbeforeenglishswap.vue')['default']
+    Fr: typeof import('./components/fr.vue')['default']
+    French: typeof import('./components/French.vue')['default']
     Header: typeof import('./components/Header.vue')['default']
     PokemonDetails: typeof import('./components/PokemonDetails.vue')['default']
+    PokemonDetails_old: typeof import('./components/PokemonDetails_old.vue')['default']
     PokemonDetailsSkeleton: typeof import('./components/PokemonDetailsSkeleton.vue')['default']
     PokemonDetailsTest: typeof import('./components/PokemonDetailsTest.vue')['default']
     PokemonList: typeof import('./components/PokemonList.vue')['default']
+    PokemonList_old: typeof import('./components/PokemonList_old.vue')['default']
     PokemonTest: typeof import('./components/PokemonTest.vue')['default']
     README: typeof import('./components/README.md')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

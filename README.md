@@ -4,6 +4,10 @@
   PokéBeka, Pokéapi Pokedex
 </p>
 
+<p>
+https://dribbble.com/shots/15128634-Pokemon-Pokedex-Website-Redesign-Concept/attachments/6864101?mode=media
+</p>
+
 [Live Preview](https://aniairing.fr/)
 
 ## Install
@@ -25,10 +29,11 @@ pnpm run build
 ```
 
 ## Todo List
+- IsLoading superpostion patch
 - Tweak Eevee evolution display
 - Make evolution sprite clickable
 - French display with optimized fetching
-- Lazyload images
+- Work on displaying weakness
 
 ## Author
 

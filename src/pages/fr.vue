@@ -5,7 +5,7 @@ defineOptions({
 </script>
 
 <template>
-  <PokemonTest />
+  <French />
 </template>
 
 <route lang="yaml">

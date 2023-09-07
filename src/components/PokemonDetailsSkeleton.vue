@@ -55,7 +55,7 @@
     </div>
 
     <div class="stats-container">
-      <span class="title">Statistics</span>
+      <span class="title">Stats</span>
       <div class="pokemon-stats">
         <div class="stats">
           <span class="stat-name" style="background: rgb(255, 0, 0);">hp</span><span class="stat-value">35</span>

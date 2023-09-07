@@ -3,26 +3,27 @@ const searchQuery = ref('')
 const pokemonList = ref([])
 const selectedPokemon = ref(null)
 const isLoading = ref(false)
-const typeInfos = {
-  bug: { fr: 'Insecte', color: '#729f3f' },
-  dark: { fr: 'Ténèbres', color: '#707070' },
-  dragon: { fr: 'Dragon', color: 'linear-gradient(180deg, #53a4cf 50%, #f16e57 50%)' },
-  electric: { fr: 'Électrik', color: '#eed535' },
-  fairy: { fr: 'Fée', color: '#fdb9e9' },
-  fighting: { fr: 'Combat', color: '#d56723' },
-  fire: { fr: 'Feu', color: '#fd7d24' },
-  flying: { fr: 'Vol', color: 'linear-gradient(180deg, #3dc7ef 50%, #bdb9b8 50%)' },
-  ghost: { fr: 'Spectre', color: '#7b62a3' },
-  grass: { fr: 'Plante', color: '#9dca5d' },
-  ground: { fr: 'Sol', color: 'linear-gradient(180deg, #f7de3f 50%, #ab9842 50%)' },
-  ice: { fr: 'Glace', color: '#51c4e7' },
-  normal: { fr: 'Normal', color: '#a4acaf' },
-  poison: { fr: 'Poison', color: '#b97fc9' },
-  psychic: { fr: 'Psy', color: '#f366b9' },
-  rock: { fr: 'Roche', color: '#a38c21' },
-  shadow: { fr: 'Ombre', color: '#0e2e4c' },
-  steel: { fr: 'Acier', color: '#9eb7b8' },
-  water: { fr: 'Eau', color: '#4592c4' },
+
+const typeColors = {
+  bug: '#729f3f',
+  dark: '#707070',
+  dragon: 'linear-gradient(180deg, #53a4cf 50%, #f16e57 50%)',
+  electric: '#eed535',
+  fairy: '#fdb9e9',
+  fighting: '#d56723',
+  fire: '#fd7d24',
+  flying: 'linear-gradient(180deg, #3dc7ef 50%, #bdb9b8 50%)',
+  ghost: '#7b62a3',
+  grass: '#9dca5d',
+  ground: 'linear-gradient(180deg, #f7de3f 50%, #ab9842 50%)',
+  ice: '#51c4e7',
+  normal: '#a4acaf',
+  poison: '#b97fc9',
+  psychic: '#f366b9',
+  rock: '#a38c21',
+  shadow: '#0e2e4c',
+  steel: '#9eb7b8',
+  water: '#4592c4',
 }
 
 const filteredPokemonList = computed(() => {
@@ -30,8 +31,8 @@ const filteredPokemonList = computed(() => {
   return pokemonList.value.filter(
     pokemon =>
       pokemon.name.toLowerCase().includes(query)
-      || pokemon.pokedexNumber.toString().includes(query)
-      || pokemon.types.some(type => type.toLowerCase().includes(query)),
+      || pokemon.pokedexNumber.toString().includes(query),
+    // || pokemon.types.some(type => type.french.toLowerCase().includes(query)),
   )
 })
 
@@ -39,58 +40,23 @@ function getLanguage(arr, lang = 'fr') {
   return arr.find(item => item.language.name === lang)
 }
 
-function getIdFromUrl(url) {
-  const parts = url.split('/')
-  return Number.parseInt(parts[parts.length - 2])
-}
-
 async function fetchPokemonList() {
+  isLoading.value = true
   const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151')
   const data = await response.json()
-  const pokemonPromises = data.results.map(async (pokemon) => {
-    return {
-      id: getIdFromUrl(pokemon.url),
-      pokedexNumber: getIdFromUrl(pokemon.url),
-      name: pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1),
-      sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getIdFromUrl(pokemon.url)}.png`,
-      types: [],
-    }
-  })
-  pokemonList.value = await Promise.all(pokemonPromises)
+
+  pokemonList.value = data.results.map(pokemon => ({
+    pokedexNumber: getIdFromUrl(pokemon.url),
+    id: getIdFromUrl(pokemon.url),
+    name: pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1),
+    sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getIdFromUrl(pokemon.url)}.png`, // Add the sprite URL here
+  }))
+
   // Select random by default
-  const randomNumber = Math.floor(Math.random() * 151) + 1
+  const randomNumber = Math.floor(Math.random() * (151 - 1 + 1)) + 1
   const defaultPokemon = pokemonList.value.find(pokemon => pokemon.id === randomNumber)
   if (defaultPokemon)
     fetchPokemonDetails(defaultPokemon)
-
-  getAllTypes()
-}
-
-async function getAllTypes() {
-  const typeList = []
-  for (let i = 0; i < 18; i++) {
-    const url = `https://pokeapi.co/api/v2/type/${i + 1}`
-    const response = await fetch(url)
-    const typeData = await response.json()
-
-    const typeName = typeData.name
-    const typePokemons = typeData.pokemon.map((pokemon) => {
-      return {
-        id: getIdFromUrl(pokemon.pokemon.url),
-        name: pokemon.pokemon.name.charAt(0).toUpperCase() + pokemon.pokemon.name.slice(1),
-      }
-    })
-    typeList.push({ name: typeName, pokemons: typePokemons })
-  }
-
-  // Update the types property of each Pokémon in pokemonList
-  for (const type of typeList) {
-    for (const pokemon of pokemonList.value) {
-      const matchingPokemon = type.pokemons.find(p => p.name === pokemon.name)
-      if (matchingPokemon)
-        pokemon.types.push(type.name)
-    }
-  }
 }
 
 async function fetchPokemonDetails(pokemon) {
@@ -107,6 +73,7 @@ async function fetchPokemonDetails(pokemon) {
   const data = await response.json()
 
   const animatedSprite = data.sprites.versions['generation-v']['black-white'].animated.front_default
+  const normalSprite = data.sprites.front_default
 
   const abilitiesData = await Promise.all(
     data.abilities.map(async (ability) => {
@@ -143,22 +110,28 @@ async function fetchPokemonDetails(pokemon) {
 
   selectedPokemon.value = {
     ...pokemon,
-    pokedexNumber: pokemon.id,
-    animatedSprite: animatedSprite || pokemon.sprite,
+    animatedSprite: animatedSprite || normalSprite,
+    pokedexNumber: data.id,
     height: data.height / 10,
     weight: data.weight / 10,
-    description: frenchDescription?.flavor_text ?? '',
+    description: frenchDescription ? frenchDescription.flavor_text : '',
     species: getLanguage(speciesData.names).name,
     stats,
     category: getLanguage(speciesData.genera)?.genus,
     abilities,
-    types: pokemon.types,
+    types,
   }
 }
 
 function selectPokemon(pokemon) {
   fetchPokemonDetails(pokemon)
 }
+
+function getIdFromUrl(url) {
+  const parts = url.split('/')
+  return Number.parseInt(parts[parts.length - 2])
+}
+
 onMounted(() => {
   fetchPokemonList()
 })
@@ -172,24 +145,30 @@ onMounted(() => {
   <main class="pokemon-container">
     <div class="pokemon-grid">
       <div v-for="pokemon in filteredPokemonList" :key="pokemon.name" class="pokemon" @click="selectPokemon(pokemon)">
-        <img class="sprite" :src="pokemon.sprite" alt="pokemon sprite" loading="lazy">
+        <img class="sprite" :src="pokemon.sprite" alt="pokemon sprite">
         <span class="name">{{ pokemon.name }}</span>
         <span class="number">No. {{ pokemon.pokedexNumber }}</span>
+
         <div class="types-container">
           <div class="pokemon-types">
-            <span v-for="type in pokemon.types" :key="type" :style="{ background: typeInfos[type].color }" class="type">
-              {{ type }}</span>
+            <span
+              v-for="type in pokemon.types" :key="type.french"
+              :style="{ background: typeColors[type.english.toLowerCase()] }"
+              class="type"
+            >
+              {{ type.french }}
+            </span>
           </div>
         </div>
       </div>
     </div>
 
     <div v-if="isLoading" class="details-container">
-      <pokemon-details-skeleton :pokemon="selectedPokemon" :type-infos="typeInfos" />
+      <pokemon-details-skeleton :pokemon="selectedPokemon" :type-colors="typeColors" />
     </div>
 
     <div v-if="selectedPokemon" class="details-container">
-      <pokemon-details-test :pokemon="selectedPokemon" :type-infos="typeInfos" />
+      <pokemon-details :pokemon="selectedPokemon" :type-colors="typeColors" />
     </div>
   </main>
 </template>
