@@ -27,7 +27,7 @@ function getTotalStats() {
     <div class="img-container">
       <img class="sprite" :src="pokemon.animatedSprite" alt="pokemon sprite">
     </div>
-    <span class="number">#{{ pokemon.pokedexNumber }}</span>
+    <span class="number">No. {{ pokemon.pokedexNumber }}</span>
     <span class="name">{{ pokemon.name }}</span>
 
     <div class="types-container">
@@ -58,7 +58,7 @@ function getTotalStats() {
     <div class="abilities-container">
       <span class="title">Abilities</span>
       <div class="pokemon-abilities">
-        <span v-for="abilities in pokemon.abilities" :key="abilities.name" class="abilities">
+        <span v-for="abilities in pokemon.abilities" :key="abilities.name" class="abilitie">
           {{ abilities }}
         </span>
       </div>
@@ -72,7 +72,7 @@ function getTotalStats() {
         </div>
         <div class="weight">
           <span class="title">Weight</span>
-          <span class="weight-value">{{ pokemon.weight }} Weight</span>
+          <span class="weight-value">{{ pokemon.weight }} Kilos</span>
         </div>
       </div>
     </div>
@@ -96,6 +96,7 @@ function getTotalStats() {
       <div class="evolution-content">
         <div v-for="evolution, index in pokemon.evolution" :key="index" class="evolution-stage">
           <!-- {{ evolution }} -->
+
           <span v-if="evolution.minLevel" class="min-level">Lv. {{ evolution.minLevel }}</span>
           <span v-if="index > 0 && evolution.minLevel === ''" class="min-level">?</span>
           <img v-if="pokemon.evolution.length > 1" :src="evolution.sprite" alt="evolution sprite" class="evolution-sprite">

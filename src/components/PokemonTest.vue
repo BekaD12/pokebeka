@@ -2,6 +2,8 @@
 const searchQuery = ref('')
 const pokemonList = ref([])
 const selectedPokemon = ref(null)
+const closingPokemonDetails = ref(false)
+const isMobileView = ref(window.innerWidth < 768)
 const isLoading = ref(false)
 const typeInfos = {
   bug: { fr: 'Insecte', color: '#729f3f' },
@@ -47,17 +49,20 @@ async function fetchPokemonList() {
     }
   })
   pokemonList.value = await Promise.all(pokemonPromises)
-  // Select random by default
-  const randomNumber = Math.floor(Math.random() * 151) + 1
-  const defaultPokemon = pokemonList.value.find(pokemon => pokemon.id === randomNumber)
-  if (defaultPokemon)
-    fetchPokemonDetails(defaultPokemon)
 
+  if (!isMobileView.value) {
+    // Select random by default
+    const randomNumber = Math.floor(Math.random() * 1010) + 1
+    const defaultPokemon = pokemonList.value.find(pokemon => pokemon.id === randomNumber)
+    if (defaultPokemon)
+      fetchPokemonDetails(defaultPokemon)
+  }
   getAllTypes()
 }
 
 async function fetchPokemonDetails(pokemon) {
-  // isLoading.value = true
+  if (!isMobileView.value)
+    isLoading.value = true
 
   // Fetch details of the selected Pokemon
   const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.id}`)
@@ -94,7 +99,6 @@ async function fetchPokemonDetails(pokemon) {
     traverseEvolution(evolution)
     return chains
   }
-
   const evolution = getEvolutionChain(evolutionChain.chain)
 
   const abilitiesData = await Promise.all(
@@ -123,7 +127,7 @@ async function fetchPokemonDetails(pokemon) {
       || pokemon.sprite,
     height: data.height / 10,
     weight: data.weight / 10,
-    description: getLanguage(speciesData.flavor_text_entries, 'en')?.flavor_text ?? '',
+    description: getLanguage(speciesData.flavor_text_entries)?.flavor_text ?? '',
     species: getLanguage(speciesData.names).name,
     stats,
     category: getLanguage(speciesData.genera)?.genus,
@@ -131,6 +135,7 @@ async function fetchPokemonDetails(pokemon) {
     types: pokemon.types,
     evolution,
   }
+  isLoading.value = false
 }
 
 async function getAllTypes() {
@@ -160,6 +165,7 @@ async function getAllTypes() {
   }
 }
 
+// search logic
 const filteredPokemonList = computed(() => {
   const query = searchQuery.value.toLowerCase()
   return pokemonList.value.filter(
@@ -173,6 +179,17 @@ const filteredPokemonList = computed(() => {
 function selectPokemon(pokemon) {
   fetchPokemonDetails(pokemon)
 }
+
+function closePokemonDetails() {
+  closingPokemonDetails.value = true
+  setTimeout(() => {
+    if (closingPokemonDetails.value) {
+      selectedPokemon.value = null
+      closingPokemonDetails.value = false
+    }
+  }, 800)
+}
+
 onMounted(() => {
   fetchPokemonList()
 })
@@ -191,7 +208,12 @@ onMounted(() => {
         <span class="number">No. {{ pokemon.pokedexNumber }}</span>
         <div class="types-container">
           <div class="pokemon-types">
-            <span v-for="type in pokemon.types" :key="type" :style="{ background: typeInfos[type].color }" class="type">
+            <span
+              v-for="type in pokemon.types"
+              :key="type"
+              :style="{ background: typeInfos[type].color }"
+              class="type"
+            >
               {{ type }}</span>
           </div>
         </div>
@@ -199,11 +221,17 @@ onMounted(() => {
     </div>
 
     <div v-if="isLoading" class="details-container">
-      <pokemon-details-skeleton :pokemon="selectedPokemon" :type-infos="typeInfos" />
+      <pokemon-details-skeleton />
     </div>
 
-    <div v-if="selectedPokemon" class="details-container">
+    <div
+      v-if="selectedPokemon"
+      class="details-container"
+      :class="{ 'slide-in': selectedPokemon, 'slide-out': closingPokemonDetails }"
+    >
+      <div v-if="isMobileView && selectedPokemon" :style="{ background: typeInfos[selectedPokemon.types[0]].color }" class="overlay" @click="closePokemonDetails" />
       <pokemon-details-test :pokemon="selectedPokemon" :type-infos="typeInfos" />
+      <div v-if="isMobileView" i-carbon-close-outline class="close-button" @click="closePokemonDetails" />
     </div>
   </main>
 </template>

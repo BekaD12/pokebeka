@@ -25,7 +25,8 @@ pnpm run build
 ```
 
 ## Todo List
-
+- Tweak Eevee evolution display
+- Make evolution sprite clickable
 - French display with optimized fetching
 - Lazyload images
 

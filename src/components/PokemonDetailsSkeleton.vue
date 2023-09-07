@@ -1,5 +1,5 @@
 <template>
-  <div class="pokemon-details">
+  <div class="pokemon-details skeleton">
     <div class="img-container">
       <img
         class="sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/25.png" alt="pokemon sprite"
@@ -18,27 +18,25 @@
 
     <div class="description-container">
       <p class="description">
-        Il lui arrive de remettre d’aplomb
-        un Pikachu allié en lui envoyant
-        une décharge électrique.
+        When several of these POKéMON gather, their electricity could build and cause lightning storms.
       </p>
     </div>
 
     <div class="category-container">
       <span class="title">Categories</span>
       <div class="pokemon-category">
-        <span class="category">Pokémon Souris</span>
+        <span class="category">Mouse Pokémon</span>
       </div>
     </div>
 
     <div class="abilities-container">
-      <span class="title">Compétences</span>
+      <span class="title">Abilities</span>
       <div class="pokemon-abilities">
-        <span class="abilities">
-          Statik
+        <span class="abilitie">
+          Static
         </span>
-        <span class="abilities">
-          Paratonnerre
+        <span class="abilitie">
+          Lightning Rod
         </span>
       </div>
     </div>
@@ -46,21 +44,21 @@
     <div class="info-container">
       <div class="pokemon-info">
         <div class="size">
-          <span class="title">Taille</span>
-          <span class="height-value">0.4 Mètres</span>
+          <span class="title">Height</span>
+          <span class="height-value">0.4 Meters</span>
         </div>
         <div class="weight">
-          <span class="title">Poids</span>
+          <span class="title">Weight</span>
           <span class="weight-value">6 Kilos</span>
         </div>
       </div>
     </div>
 
     <div class="stats-container">
-      <span class="title">Statistiques</span>
+      <span class="title">Statistics</span>
       <div class="pokemon-stats">
         <div class="stats">
-          <span class="stat-name" style="background: rgb(255, 0, 0);">pv</span><span class="stat-value">35</span>
+          <span class="stat-name" style="background: rgb(255, 0, 0);">hp</span><span class="stat-value">35</span>
         </div><div class="stats">
           <span class="stat-name" style="background: rgb(240, 128, 48);">atk</span><span class="stat-value">55</span>
         </div><div class="stats">
@@ -78,7 +76,18 @@
     </div>
 
     <div class="evolution-container">
-      <div class="pokemon-evolution" />
+      <div class="evolution-content">
+        <div class="evolution-stage">
+          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png" alt="evolution sprite" class="evolution-sprite">
+        </div>
+        <div class="evolution-stage">
+          <span class="min-level">?</span>
+          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png" alt="evolution sprite" class="evolution-sprite">
+        </div><div class="evolution-stage">
+          <span class="min-level">?</span>
+          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png" alt="evolution sprite" class="evolution-sprite">
+        </div>
+      </div>
     </div>
   </div>
 </template>
