@@ -5,7 +5,7 @@ defineOptions({
 </script>
 
 <template>
-  <French />
+  <FrenchList />
 </template>
 
 <route lang="yaml">

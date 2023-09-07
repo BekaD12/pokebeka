@@ -10,6 +10,8 @@ declare module 'vue' {
     Detailstestbeforeenglishswap: typeof import('./components/detailstestbeforeenglishswap.vue')['default']
     Fr: typeof import('./components/fr.vue')['default']
     French: typeof import('./components/French.vue')['default']
+    FrenchDetails: typeof import('./components/FrenchDetails.vue')['default']
+    FrenchList: typeof import('./components/FrenchList.vue')['default']
     Header: typeof import('./components/Header.vue')['default']
     PokemonDetails: typeof import('./components/PokemonDetails.vue')['default']
     PokemonDetails_old: typeof import('./components/PokemonDetails_old.vue')['default']
