@@ -1,7 +1,9 @@
 <template>
   <div class="pokemon-details">
     <div class="img-container">
-      <img class="sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/25.gif" alt="pokemon sprite">
+      <img
+        class="sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/25.png" alt="pokemon sprite"
+      >
     </div>
     <span class="number">#25</span>
     <span class="name">Pikachu</span>

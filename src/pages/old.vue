@@ -1,6 +1,4 @@
 <script setup>
-import { onMounted, ref } from 'vue'
-
 const searchQuery = ref('')
 const pokemonList = ref([])
 const selectedPokemon = ref(null)
@@ -29,19 +27,13 @@ const typeColors = {
 
 // Search
 const filteredPokemonList = computed(() => {
-  const query = searchQuery.value.trim().toLowerCase()
-  if (!query)
-    return pokemonList.value
-
-  return pokemonList.value.filter((pokemon) => {
-    const nameMatch = pokemon.species.toLowerCase().includes(query)
-    const typeMatch = pokemon.types.some(
-      type => type.french.toLowerCase().includes(query) || type.english.toLowerCase().includes(query),
-    )
-    const numberMatch = pokemon.pokedexNumber.toString().includes(query)
-
-    return nameMatch || typeMatch || numberMatch
-  })
+  const query = searchQuery.value.toLowerCase()
+  return pokemonList.value.filter(
+    pokemon =>
+      pokemon.name.toLowerCase().includes(query)
+      || pokemon.pokedexNumber.toString().includes(query)
+      || pokemon.types.some(type => type.french.toLowerCase().includes(query)),
+  )
 })
 
 async function fetchPokemonData(pokemon) {
