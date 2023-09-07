@@ -29,6 +29,7 @@ pnpm run build
 ```
 
 ## Todo List
+- Skeleton for list before fetching types
 - IsLoading superpostion patch
 - Tweak Eevee evolution display
 - Make evolution sprite clickable
