@@ -1,14 +1,14 @@
 <h1 align="center">PokéBeka</h1>
 
 <p align="center">
-  PokéBeka, Pokéapi Pokedex
+  PokéBeka, Pokéapi Pokedex made with vue3
 </p>
 
 <p>
 https://dribbble.com/shots/15128634-Pokemon-Pokedex-Website-Redesign-Concept/attachments/6864101?mode=media
 </p>
 
-[Live Preview](https://aniairing.fr/)
+[Live Preview](https://pokebeka.netlify.app/)
 
 ## Install
 

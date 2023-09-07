@@ -127,15 +127,15 @@
 .img-container {
   display: flex;
   justify-content: center;
-  /* margin-bottom: 1.5rem; */
-  /* margin-top: -15rem; */
+  margin-bottom: 1.5rem;
+  margin-top: -8rem;
 }
 
 .img-container img {
-  height: 12rem;
+  height: 14rem;
   image-rendering: pixelated;
   object-fit: contain;
-  width: 12rem;
+  width: 14rem;
 }
 
 .stats-container {
