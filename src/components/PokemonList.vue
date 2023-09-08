@@ -61,8 +61,8 @@ async function fetchPokemonList() {
 }
 
 async function fetchPokemonDetails(pokemon) {
-  if (!isMobileView.value)
-    isLoading.value = true
+  // if (!isMobileView.value)
+  // isLoading.value = true
 
   // Fetch details of the selected Pokemon
   const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.id}`)
@@ -135,7 +135,7 @@ async function fetchPokemonDetails(pokemon) {
     types: pokemon.types,
     evolution,
   }
-  isLoading.value = false
+  // isLoading.value = false
 }
 
 async function getAllTypes() {
