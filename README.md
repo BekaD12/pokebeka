@@ -5,7 +5,9 @@
 </p>
 
 <p>
+Inspired by AC1design dribble and davidhckh natif JavaScript integration
 https://dribbble.com/shots/15128634-Pokemon-Pokedex-Website-Redesign-Concept/attachments/6864101?mode=media
+https://github.com/davidhckh/pokedex
 </p>
 
 [Live Preview](https://pokebeka.netlify.app/)
@@ -30,11 +32,12 @@ pnpm run build
 
 ## Todo List
 - Skeleton for list before fetching types
-- IsLoading superpostion patch
-- Tweak Eevee evolution display
-- Make evolution sprite clickable
-- French display with optimized fetching
+- IsLoading superpostion
+- Tweak Eevee evolution display (and Pokemon with lot of evolutions)
+- Make evolution sprite clickable in the detail
+- French display with optimized fetching (species fetching make a lot of requests)
 - Work on displaying weakness
+- Old files Cleanup
 
 ## Author
 
