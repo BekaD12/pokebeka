@@ -31,6 +31,10 @@
   transition: box-shadow .6s ease;
 }
 
+.loading-cursor .pokemon {
+  cursor: wait;
+}
+
 .pokemon-grid::after {
   content: "";
   display: grid;
@@ -103,9 +107,9 @@
   box-shadow: var(--shadow);
   font-size: 1.5rem;
   max-width: 50rem;
+  min-width: 50rem;
   padding: 0 2.5rem 2.5rem 2.5rem;
   text-align: center;
-  min-width: 50rem;
 }
 
 .pokemon-details .name {
