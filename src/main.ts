@@ -8,6 +8,7 @@ import generatedRoutes from '~pages'
 
 import '@unocss/reset/tailwind.css'
 import './styles/main.css'
+import './styles/skeleton.css'
 import './styles/pokemon.css'
 import 'uno.css'
 

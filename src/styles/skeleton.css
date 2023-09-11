@@ -1,0 +1,54 @@
+.skeleton {
+  --skeleton-background: hsl(200, 20%, 90%);
+  --skeleton-animation: skeleton-loading 1s linear infinite alternate;
+}
+
+.pokemon.skeleton .sprite-container {
+  animation: var(--skeleton-animation);
+  background: var(--skeleton-background);
+  border-radius: var(--item-radius);
+  height: 14rem;
+  position: relative;
+  width: 100%;
+}
+
+.pokemon.skeleton .number {
+  animation: var(--skeleton-animation);
+  background: var(--skeleton-background);
+  border-radius: var(--item-radius);
+  height: 2.5rem;
+  margin-top: 1rem;
+  width: 30%;
+}
+
+.pokemon.skeleton .name {
+  animation: var(--skeleton-animation);
+  background: var(--skeleton-background);
+  border-radius: var(--item-radius);
+  height: 2.5rem;
+  margin-top: 1rem;
+  width: 60%;
+}
+
+.pokemon.skeleton .type {
+  animation: var(--skeleton-animation);
+  background: var(--skeleton-background);
+  border-radius: var(--item-radius);
+  height: 2rem;
+  width: 8rem;
+  margin-top: .5rem;
+}
+
+.pokemon-details.skeleton {
+  width: 500px;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background: var(--skeleton-background);
+  }
+
+  100% {
+    background: hsl(200, 20%, 95%);
+  }
+}

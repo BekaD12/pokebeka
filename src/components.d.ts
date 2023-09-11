@@ -19,6 +19,8 @@ declare module 'vue' {
     PokemonDetailsTest: typeof import('./components/PokemonDetailsTest.vue')['default']
     PokemonList: typeof import('./components/PokemonList.vue')['default']
     PokemonList_old: typeof import('./components/PokemonList_old.vue')['default']
+    PokemonListSkeleton: typeof import('./components/PokemonListSkeleton.vue')['default']
+    PokemonSkeleton: typeof import('./components/PokemonSkeleton.vue')['default']
     PokemonTest: typeof import('./components/PokemonTest.vue')['default']
     README: typeof import('./components/README.md')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

@@ -91,9 +91,3 @@
     </div>
   </div>
 </template>
-
-<style scoped>
-.pokemon-details{
-    width: 500px;
-}
-</style>

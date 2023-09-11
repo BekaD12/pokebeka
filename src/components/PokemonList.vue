@@ -1,31 +1,15 @@
 <script setup>
+import { typeInfos } from '~/modules/typeinfos'
+
+const limit = 1010
+const offset = 0
 const searchQuery = ref('')
 const pokemonList = ref([])
 const selectedPokemon = ref(null)
 const closingPokemonDetails = ref(false)
 const isMobileView = ref(window.innerWidth < 768)
-const isLoading = ref(false)
-const typeInfos = {
-  bug: { fr: 'Insecte', color: '#729f3f' },
-  dark: { fr: 'Ténèbres', color: '#707070' },
-  dragon: { fr: 'Dragon', color: 'linear-gradient(180deg, #53a4cf 50%, #f16e57 50%)' },
-  electric: { fr: 'Électrik', color: '#eed535' },
-  fairy: { fr: 'Fée', color: '#fdb9e9' },
-  fighting: { fr: 'Combat', color: '#d56723' },
-  fire: { fr: 'Feu', color: '#fd7d24' },
-  flying: { fr: 'Vol', color: 'linear-gradient(180deg, #3dc7ef 50%, #bdb9b8 50%)' },
-  ghost: { fr: 'Spectre', color: '#7b62a3' },
-  grass: { fr: 'Plante', color: '#9dca5d' },
-  ground: { fr: 'Sol', color: 'linear-gradient(180deg, #f7de3f 50%, #ab9842 50%)' },
-  ice: { fr: 'Glace', color: '#51c4e7' },
-  normal: { fr: 'Normal', color: '#a4acaf' },
-  poison: { fr: 'Poison', color: '#b97fc9' },
-  psychic: { fr: 'Psy', color: '#f366b9' },
-  rock: { fr: 'Roche', color: '#a38c21' },
-  shadow: { fr: 'Ombre', color: '#0e2e4c' },
-  steel: { fr: 'Acier', color: '#9eb7b8' },
-  water: { fr: 'Eau', color: '#4592c4' },
-}
+const isLoadingDetail = ref(false)
+const isLoadingList = ref(false)
 
 function getLanguage(arr, lang = 'en') {
   return arr.find(item => item.language.name === lang)
@@ -37,7 +21,8 @@ function getIdFromUrl(url) {
 }
 
 async function fetchPokemonList() {
-  const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1010')
+  isLoadingList.value = true
+  const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
   const data = await response.json()
   const pokemonPromises = data.results.map(async (pokemon) => {
     return {
@@ -62,7 +47,7 @@ async function fetchPokemonList() {
 
 async function fetchPokemonDetails(pokemon) {
   // if (!isMobileView.value)
-  // isLoading.value = true
+  // isLoadingDetail.value = true
 
   // Fetch details of the selected Pokemon
   const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.id}`)
@@ -135,7 +120,7 @@ async function fetchPokemonDetails(pokemon) {
     types: pokemon.types,
     evolution,
   }
-  // isLoading.value = false
+  // isLoadingDetail.value = false
 }
 
 async function getAllTypes() {
@@ -163,6 +148,7 @@ async function getAllTypes() {
         pokemon.types.push(type.name)
     }
   }
+  isLoadingList.value = false
 }
 
 // search logic
@@ -206,25 +192,32 @@ onMounted(() => {
 
   <main class="pokemon-container">
     <div class="pokemon-grid">
-      <div v-for="pokemon in filteredPokemonList" :key="pokemon.name" class="pokemon" @click="selectPokemon(pokemon)">
-        <img class="sprite" :src="pokemon.sprite" alt="pokemon sprite" loading="lazy">
-        <span class="number">N° {{ pokemon.pokedexNumber }}</span>
-        <span class="name">{{ pokemon.name }}</span>
-        <div class="types-container">
-          <div class="pokemon-types">
-            <span
-              v-for="type in pokemon.types"
-              :key="type"
-              :style="{ background: typeInfos[type].color }"
-              class="type"
-            >
-              {{ type }}</span>
+      <template v-if="isLoadingList">
+        <pokemon-list-skeleton v-for="i in 16" :key="i" />
+      </template>
+
+      <template v-else>
+        <div v-for="pokemon in filteredPokemonList" :key="pokemon.name" class="pokemon" @click="selectPokemon(pokemon)">
+          <img class="sprite" :src="pokemon.sprite" alt="pokemon sprite" loading="lazy">
+          <span class="number">N° {{ pokemon.pokedexNumber }}</span>
+          <span class="name">{{ pokemon.name }}</span>
+          <div class="types-container">
+            <div class="pokemon-types">
+              <span
+                v-for="type in pokemon.types"
+                :key="type"
+                :style="{ background: typeInfos[type].color }"
+                class="type"
+              >
+                {{ type }}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      </template>
     </div>
 
-    <div v-if="isLoading" class="details-container">
+    <div v-if="isLoadingDetail" class="details-container">
       <pokemon-details-skeleton />
     </div>
 
@@ -239,3 +232,4 @@ onMounted(() => {
     </div>
   </main>
 </template>
+~/modules/typeinfos
