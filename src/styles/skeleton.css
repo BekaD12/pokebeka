@@ -7,7 +7,7 @@
   animation: var(--skeleton-animation);
   background: var(--skeleton-background);
   border-radius: var(--item-radius);
-  height: 14rem;
+  height: 12rem;
   position: relative;
   width: 100%;
 }
@@ -15,32 +15,26 @@
 .pokemon.skeleton .number {
   animation: var(--skeleton-animation);
   background: var(--skeleton-background);
-  border-radius: var(--item-radius);
+  border-radius: var(--button-radius);
   height: 2.5rem;
-  margin-top: 1rem;
+  margin-top: .8rem;
   width: 30%;
 }
 
 .pokemon.skeleton .name {
   animation: var(--skeleton-animation);
   background: var(--skeleton-background);
-  border-radius: var(--item-radius);
+  border-radius: var(--button-radius);
   height: 2.5rem;
-  margin-top: 1rem;
-  width: 60%;
+  margin-top: .8rem;
+  width: 70%;
 }
 
 .pokemon.skeleton .type {
-  animation: var(--skeleton-animation);
+  /* animation: var(--skeleton-animation); */
   background: var(--skeleton-background);
-  border-radius: var(--item-radius);
-  height: 2rem;
-  width: 8rem;
-  margin-top: .5rem;
-}
-
-.pokemon-details.skeleton {
-  width: 500px;
+  border-radius: var(--button-radius);
+  height: 3.2rem;
 }
 
 @keyframes skeleton-loading {

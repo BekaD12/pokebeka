@@ -2,7 +2,7 @@
   <div class="pokemon-details skeleton">
     <div class="img-container">
       <img
-        class="sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/25.png" alt="pokemon sprite"
+        class="sprite" src="/25.gif" alt="pokemon sprite"
       >
     </div>
     <span class="number">#25</span>

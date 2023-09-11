@@ -47,7 +47,7 @@ async function fetchPokemonList() {
 
 async function fetchPokemonDetails(pokemon) {
   // if (!isMobileView.value)
-  // isLoadingDetail.value = true
+  isLoadingDetail.value = true
 
   // Fetch details of the selected Pokemon
   const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.id}`)
@@ -120,7 +120,7 @@ async function fetchPokemonDetails(pokemon) {
     types: pokemon.types,
     evolution,
   }
-  // isLoadingDetail.value = false
+  isLoadingDetail.value = false
 }
 
 async function getAllTypes() {
@@ -180,6 +180,15 @@ function closePokemonDetails() {
   }, 800)
 }
 
+function toggleBodyCursor() {
+  const body = document.body
+  isLoadingDetail.value ? body.classList.add('loading-cursor') : body.classList.remove('loading-cursor')
+}
+
+watch(isLoadingDetail, () => {
+  toggleBodyCursor()
+})
+
 onMounted(() => {
   fetchPokemonList()
 })
@@ -193,7 +202,7 @@ onMounted(() => {
   <main class="pokemon-container">
     <div class="pokemon-grid">
       <template v-if="isLoadingList">
-        <pokemon-list-skeleton v-for="i in 16" :key="i" />
+        <pokemon-list-skeleton v-for="i in 15" :key="i" />
       </template>
 
       <template v-else>
@@ -217,14 +226,14 @@ onMounted(() => {
       </template>
     </div>
 
-    <div v-if="isLoadingDetail" class="details-container">
+    <div v-if="isLoadingDetail && !selectedPokemon" class="details-container">
       <pokemon-details-skeleton />
     </div>
 
     <div
-      v-if="selectedPokemon"
+      v-else-if="selectedPokemon"
       class="details-container"
-      :class="{ 'slide-in': selectedPokemon, 'slide-out': closingPokemonDetails }"
+      :class="{ 'slide-in': selectedPokemon, 'slide-out': closingPokemonDetails, 'loading-cursor': isLoadingDetail }"
     >
       <div v-if="isMobileView && selectedPokemon" :style="{ background: typeInfos[selectedPokemon.types[0]].color }" class="overlay" @click="closePokemonDetails" />
       <pokemon-details :pokemon="selectedPokemon" :type-infos="typeInfos" />
@@ -232,4 +241,3 @@ onMounted(() => {
     </div>
   </main>
 </template>
-~/modules/typeinfos

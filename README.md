@@ -31,8 +31,8 @@ pnpm run build
 ```
 
 ## Todo List
-- Fetch 151 and add offset
-- Skeleton for list before fetching types
+- Fetch 151 and add offset (make the search work ?)
+- Skeleton for list before fetching types ✔︎
 - IsLoading superpostion
 - Tweak Eevee evolution display (and Pokemon with lot of evolutions)
 - Make evolution sprite clickable in the detail

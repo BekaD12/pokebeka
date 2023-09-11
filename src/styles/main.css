@@ -95,6 +95,10 @@ input[type="search"]::-webkit-search-cancel-button {
   overflow: hidden;
 }
 
+.loading-cursor {
+  cursor: wait !important;
+}
+
 @media (max-width: 64em) {
   input[type="search"] {
     width: 90%;
