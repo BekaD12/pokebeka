@@ -226,7 +226,7 @@ onMounted(() => {
       </template>
     </div>
 
-    <div v-if="isLoadingDetail && !selectedPokemon" class="details-container">
+    <div v-if="isLoadingDetail && !selectedPokemon && !isMobileView" class="details-container">
       <pokemon-details-skeleton />
     </div>
 
