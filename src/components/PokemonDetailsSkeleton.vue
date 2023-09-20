@@ -32,10 +32,10 @@
     <div class="abilities-container">
       <span class="title">Abilities</span>
       <div class="pokemon-abilities">
-        <span class="abilitie">
+        <span class="ability">
           Static
         </span>
-        <span class="abilitie">
+        <span class="ability">
           Lightning Rod
         </span>
       </div>

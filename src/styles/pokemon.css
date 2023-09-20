@@ -1,18 +1,13 @@
 .pokemon-container {
   display: flex;
-  /* justify-content: center; */
-
 }
 
 .pokemon-grid {
-  /* width: 100rem; */
   display: flex;
   flex-wrap: wrap;
   font-size: 1.8rem;
-  /* display: grid; */
   gap: 1.2rem;
   margin-right: 52rem;
-  /* grid-template-columns: repeat(3, 1fr); */
   padding: 0 2.5rem;
 }
 
@@ -25,7 +20,6 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  /* gap: 0.5rem; */
   min-width: 25rem;
   padding-bottom: 2rem;
   transition: box-shadow .6s ease;
@@ -96,7 +90,6 @@
   justify-content: flex-start;
   margin-top: 17.5rem;
   position: fixed;
-  /* left: calc(100rem + 0.5rem); */
   right: 2rem;
   top: 0;
 }

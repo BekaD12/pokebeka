@@ -31,14 +31,13 @@ pnpm run build
 ```
 
 ## Todo List
-- Fetch 151 and add offset (make the search work ?)
-- Skeleton for list before fetching types ✔︎
-- IsLoading superpostion
+- Fetch 151 and add offset on scroll(make the search work ?)
 - Tweak Eevee evolution display (and Pokemon with lot of evolutions)
 - Make evolution sprite clickable in the detail
 - French display with optimized fetching (species fetching make a lot of requests)
 - Work on displaying weakness
-- Old files Cleanup
+- Skeleton for list before fetching types ✔︎
+- IsLoading superpostion ✔︎
 
 ## Author
 

@@ -48,7 +48,7 @@ function getTotalStats() {
     <div class="abilities-container">
       <span class="title">Abilities</span>
       <div class="pokemon-abilities">
-        <span v-for="abilities in pokemon.abilities" :key="abilities.name" class="abilitie">
+        <span v-for="abilities in pokemon.abilities" :key="abilities.name" class="ability">
           {{ abilities }}
         </span>
       </div>
