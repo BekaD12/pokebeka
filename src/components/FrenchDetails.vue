@@ -1,5 +1,6 @@
 <script setup>
 const { pokemon, typeInfos } = defineProps(['pokemon', 'typeInfos'])
+
 const statData = {
   'hp': { short: 'hp', color: '#ff0000' },
   'attack': { short: 'atk', color: '#f08030' },
@@ -9,17 +10,15 @@ const statData = {
   'speed': { short: 'spd', color: '#f85888' },
 }
 
-function getShortenedStat(statName) {
+const shortenedStat = computed(() => (statName) => {
   return statData[statName]?.short || statName
-}
-
-function getStatColor(statName) {
+})
+const statColor = computed(() => (statName) => {
   return statData[statName]?.color || '#000000'
-}
-
-function getTotalStats() {
+})
+const totalStats = computed(() => {
   return pokemon.stats.reduce((total, stat) => total + stat.value, 0)
-}
+})
 </script>
 
 <template>
@@ -28,7 +27,7 @@ function getTotalStats() {
       <img class="sprite" :src="pokemon.animatedSprite" alt="pokemon sprite">
     </div>
     <span class="number">#{{ pokemon.pokedexNumber }}</span>
-    <span class="name">{{ pokemon.species }}</span>
+    <span class="name">{{ pokemon.name }}</span>
     <span class="category">{{ pokemon.category }}</span>
 
     <div class="types-container">
@@ -71,27 +70,26 @@ function getTotalStats() {
       <span class="title">Stats</span>
       <div class="pokemon-stats">
         <div v-for="stat in pokemon.stats" :key="stat.name" class="stats">
-          <span :style="{ background: getStatColor(stat.name) }" class="stat-name">{{ getShortenedStat(stat.name)
+          <span :style="{ background: statColor(stat.name) }" class="stat-name">{{ shortenedStat(stat.name)
           }}</span>
           <span class="stat-value">{{ stat.value }}</span>
         </div>
         <div class="total-stats">
           <span class="total-label">TOT</span>
-          <span class="total-value">{{ getTotalStats() }}</span>
+          <span class="total-value">{{ totalStats }}</span>
         </div>
       </div>
     </div>
 
     <div class="evolution-container">
-      <span class="title">Evolution</span>
+      <span v-show="pokemon.evolution.length > 1" class="title">Evolution</span>
       <div class="evolution-content">
         <div v-for="evolution, index in pokemon.evolution" :key="index" class="evolution-stage">
           <span v-if="evolution.minLevel" class="min-level">Lv. {{ evolution.minLevel }}</span>
           <span v-if="index > 0 && evolution.minLevel === ''" class="min-level">?</span>
-          <img
-            v-if="pokemon.evolution.length > 1" :src="evolution.sprite" alt="evolution sprite"
-            class="evolution-sprite"
-          >
+          <div v-show="pokemon.evolution.length > 1" class="evolution-sprite-container">
+            <img :src="evolution.sprite" alt="evolution sprite" class="evolution-sprite">
+          </div>
         </div>
       </div>
     </div>

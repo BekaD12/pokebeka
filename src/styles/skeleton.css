@@ -9,7 +9,8 @@
   border-radius: var(--item-radius);
   height: 12rem;
   position: relative;
-  width: 100%;
+  width: 50%;
+  margin-top: 1rem;
 }
 
 .pokemon.skeleton .number {

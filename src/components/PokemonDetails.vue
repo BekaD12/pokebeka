@@ -51,7 +51,7 @@ const totalStats = computed(() => {
     <div class="abilities-container">
       <span class="title">Abilities</span>
       <div class="pokemon-abilities">
-        <span v-for="abilities in pokemon.abilities" :key="abilities.name" class="ability">
+        <span v-for="abilities in pokemon.abilities" :key="abilities.name" class="abilitie">
           {{ abilities }}
         </span>
       </div>

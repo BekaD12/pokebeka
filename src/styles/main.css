@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500&display=swap');
 
 :root {
   --background: #edf1F5;
@@ -40,7 +40,7 @@ body {
 html,
 body,
 #app {
-  font-family: 'Fredoka', sans-serif, -apple-system, blinkmacsystemfont, "Segoe UI", roboto, helvetica, arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: 'Inter', sans-serif, -apple-system, blinkmacsystemfont, "Segoe UI", roboto, helvetica, arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   height: 100%;
   letter-spacing: .05rem;
   margin: 0;
