@@ -6,6 +6,7 @@
 
 <p>
 Inspired by AC1design dribble and davidhckh natif JavaScript integration
+
 https://dribbble.com/shots/15128634-Pokemon-Pokedex-Website-Redesign-Concept/attachments/6864101?mode=media
 https://github.com/davidhckh/pokedex
 </p>
