@@ -1,5 +1,5 @@
 <script setup>
-const { pokemon, typeInfos } = defineProps(['pokemon', 'typeInfos'])
+const { pokemon, typeInfos, selectPokemon } = defineProps(['pokemon', 'typeInfos', 'selectPokemon'])
 
 const statData = {
   'hp': { short: 'hp', color: '#ff0000' },
@@ -92,7 +92,7 @@ const totalStats = computed(() => {
           <span v-if="evolution.minLevel" class="min-level">Lv. {{ evolution.minLevel }}</span>
           <span v-if="index > 0 && evolution.minLevel === ''" class="min-level">?</span>
           <div v-show="pokemon.evolution.length > 1" class="evolution-sprite-container">
-            <img :src="evolution.sprite" alt="evolution sprite" class="evolution-sprite">
+            <img :src="evolution.sprite" alt="evolution sprite" class="evolution-sprite" @click="evolution.id === pokemon.id ? null : selectPokemon(evolution)">
           </div>
         </div>
       </div>

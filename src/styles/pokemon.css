@@ -246,12 +246,22 @@
 
 .evolution-stage {
   align-items: center;
+  cursor: pointer;
   display: flex;
 }
 
 .evolution-sprite {
   height: 10rem;
+  transition-duration: 400ms;
   width: 10rem;
+}
+
+.evolution-sprite:hover {
+  transform: scale(1.1);
+}
+
+.loading-cursor .evolution-sprite {
+  cursor: wait;
 }
 
 .min-level {

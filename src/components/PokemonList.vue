@@ -68,12 +68,13 @@ async function fetchPokemonDetails(pokemon) {
       if (!evolution)
         return
 
+      const id = getIdFromUrl(evolution.species.url)
       const name = evolution.species.name
       const evolutionDetails = evolution.evolution_details[0]
       const minLevel = evolutionDetails?.min_level || ''
       const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getIdFromUrl(evolution.species.url)}.png`
 
-      chains.push({ name, minLevel, sprite })
+      chains.push({ id, name, minLevel, sprite })
 
       if (evolution.evolves_to.length > 0) {
         evolution.evolves_to.forEach((evo) => {
@@ -236,7 +237,7 @@ onMounted(() => {
       :class="{ 'slide-in': selectedPokemon, 'slide-out': closingPokemonDetails, 'loading-cursor': isLoadingDetail }"
     >
       <div v-if="isMobileView && selectedPokemon" :style="{ background: typeInfos[selectedPokemon.types[0]].color }" class="overlay" @click="closePokemonDetails" />
-      <pokemon-details :pokemon="selectedPokemon" :type-infos="typeInfos" />
+      <pokemon-details :pokemon="selectedPokemon" :type-infos="typeInfos" :select-pokemon="selectPokemon" />
       <div v-if="isMobileView" i-carbon-close-outline class="close-button" @click="closePokemonDetails" />
     </div>
   </main>
