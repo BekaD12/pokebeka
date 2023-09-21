@@ -7,6 +7,7 @@
     </div>
     <span class="number">#25</span>
     <span class="name">Pikachu</span>
+    <span class="category">Mouse Pokémon</span>
 
     <div class="types-container">
       <div class="pokemon-types">
@@ -20,13 +21,6 @@
       <p class="description">
         When several of these POKéMON gather, their electricity could build and cause lightning storms.
       </p>
-    </div>
-
-    <div class="category-container">
-      <span class="title">Categories</span>
-      <div class="pokemon-category">
-        <span class="category">Mouse Pokémon</span>
-      </div>
     </div>
 
     <div class="abilities-container">
