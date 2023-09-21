@@ -38,7 +38,7 @@ pnpm run build
 - French display with optimized fetching (species fetching make a lot of requests)
 - Work on displaying weakness
 - Skeleton for list before fetching types ✔︎
-- IsLoading superpostion ✔︎
+- patch IsLoading superpostion ✔︎
 
 ## Author
 
