@@ -170,7 +170,7 @@ function selectPokemon(pokemon) {
   if (isMobileView.value)
     document.body.classList.add('scroll-lock')
   const pokemonDetails = document.querySelector('.pokemon-details')
-  if (pokemonDetails && isMobileView)
+  if (pokemonDetails && isMobileView.value)
     pokemonDetails.scrollTop = 0
 }
 
