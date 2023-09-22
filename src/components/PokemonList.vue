@@ -46,7 +46,6 @@ async function fetchPokemonList() {
 }
 
 async function fetchPokemonDetails(pokemon) {
-  // if (!isMobileView.value)
   isLoadingDetail.value = true
 
   // Fetch details of the selected Pokemon
@@ -56,6 +55,9 @@ async function fetchPokemonDetails(pokemon) {
   // Fetch species
   const speciesResponse = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemon.id}`)
   const speciesData = await speciesResponse.json()
+
+  // Fetch types
+  const types = data.types.map(type => type.type.name)
 
   // Fetch evolution
   const responseEvolutions = await fetch(speciesData.evolution_chain.url)
@@ -118,7 +120,7 @@ async function fetchPokemonDetails(pokemon) {
     stats,
     category: getLanguage(speciesData.genera)?.genus,
     abilities,
-    types: pokemon.types,
+    types,
     evolution,
   }
   isLoadingDetail.value = false
@@ -167,6 +169,9 @@ function selectPokemon(pokemon) {
   fetchPokemonDetails(pokemon)
   if (isMobileView.value)
     document.body.classList.add('scroll-lock')
+  const pokemonDetails = document.querySelector('.pokemon-details')
+  if (pokemonDetails && isMobileView)
+    pokemonDetails.scrollTop = 0
 }
 
 function closePokemonDetails() {

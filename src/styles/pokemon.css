@@ -112,6 +112,10 @@
   font-weight: bold;
 }
 
+.pokemon-details .name::first-letter {
+  text-transform: uppercase;
+}
+
 .pokemon-details .number {
   color: #aaaaaa;
   font-size: 1.6rem;
@@ -299,6 +303,7 @@
     max-width: unset;
     min-width: unset;
     overflow-y: scroll;
+    scroll-behavior: smooth;
     padding: 2rem .5rem;
     z-index: 2;
   }
