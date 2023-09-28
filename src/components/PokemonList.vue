@@ -1,7 +1,7 @@
 <script setup>
 import { typeInfos } from '~/modules/typeinfos'
 
-const limit = 1010
+const limit = 151
 const offset = 0
 const searchQuery = ref('')
 const pokemonList = ref([])
@@ -37,7 +37,7 @@ async function fetchPokemonList() {
 
   if (!isMobileView.value) {
     // Select random by default
-    const randomNumber = Math.floor(Math.random() * 1010) + 1
+    const randomNumber = Math.floor(Math.random() * limit) + 1
     const defaultPokemon = pokemonList.value.find(pokemon => pokemon.id === randomNumber)
     if (defaultPokemon)
       fetchPokemonDetails(defaultPokemon)

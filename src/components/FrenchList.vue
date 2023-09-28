@@ -37,7 +37,7 @@ function getIdFromUrl(url) {
 }
 
 async function fetchPokemonList() {
-  const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1010')
+  const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151')
   const data = await response.json()
 
   const pokemonPromises = data.results.map(async (pokemon) => {
@@ -53,7 +53,7 @@ async function fetchPokemonList() {
 
   if (!isMobileView.value) {
     // Select random by default
-    const randomNumber = Math.floor(Math.random() * 1010) + 1
+    const randomNumber = Math.floor(Math.random() * 151) + 1
     const defaultPokemon = pokemonList.value.find(pokemon => pokemon.id === randomNumber)
     if (defaultPokemon)
       fetchPokemonDetails(defaultPokemon)
