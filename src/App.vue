@@ -8,7 +8,7 @@ useHead({
     { name: 'description', content: 'Pokébeka - Pokedex' },
     {
       name: 'theme-color',
-      content: () => isDark.value ? '#00aba9' : '#ffffff',
+      content: () => isDark.value ? '#14181D' : '#edf1F5',
     },
   ],
   link: [
