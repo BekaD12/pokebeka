@@ -127,11 +127,14 @@ async function fetchPokemonDetails(pokemon) {
 }
 
 async function getAllTypes() {
-  const typeList = []
-  for (let i = 0; i < 18; i++) {
-    const url = `https://pokeapi.co/api/v2/type/${i + 1}`
-    const response = await fetch(url)
-    const typeData = await response.json()
+  isLoadingList.value = true
+
+  const response = await fetch('https://pokeapi.co/api/v2/type')
+  const typesData = await response.json()
+
+  const typePromises = typesData.results.map(async (type) => {
+    const typeResponse = await fetch(type.url)
+    const typeData = await typeResponse.json()
 
     const typeName = typeData.name
     const typePokemons = typeData.pokemon.map((pokemon) => {
@@ -140,10 +143,11 @@ async function getAllTypes() {
         name: pokemon.pokemon.name.charAt(0).toUpperCase() + pokemon.pokemon.name.slice(1),
       }
     })
-    typeList.push({ name: typeName, pokemons: typePokemons })
-  }
+    return { name: typeName, pokemons: typePokemons }
+  })
 
-  // Update the types property of each Pokémon in pokemonList
+  const typeList = await Promise.all(typePromises)
+
   for (const type of typeList) {
     for (const pokemon of pokemonList.value) {
       const matchingPokemon = type.pokemons.find(p => p.name === pokemon.name)

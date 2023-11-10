@@ -303,8 +303,8 @@
     max-width: unset;
     min-width: unset;
     overflow-y: scroll;
-    scroll-behavior: smooth;
     padding: 2rem .5rem;
+    scroll-behavior: smooth;
     z-index: 2;
   }
 
