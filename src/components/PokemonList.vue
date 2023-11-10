@@ -1,6 +1,7 @@
 <script setup>
 import { typeInfos } from '~/modules/typeinfos'
 
+const body = document.body
 const limit = 1017
 const offset = 0
 const searchQuery = ref('')
@@ -22,27 +23,39 @@ function getIdFromUrl(url) {
 
 async function fetchPokemonList() {
   isLoadingList.value = true
-  const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
-  const data = await response.json()
-  const pokemonPromises = data.results.map(async (pokemon) => {
-    return {
-      id: getIdFromUrl(pokemon.url),
-      pokedexNumber: getIdFromUrl(pokemon.url),
-      name: pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1),
-      sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getIdFromUrl(pokemon.url)}.png`,
-      types: [],
-    }
-  })
-  pokemonList.value = await Promise.all(pokemonPromises)
+  try {
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
+    const data = await response.json()
 
-  if (!isMobileView.value) {
-    // Select random by default
-    const randomNumber = Math.floor(Math.random() * limit) + 1
-    const defaultPokemon = pokemonList.value.find(pokemon => pokemon.id === randomNumber)
-    if (defaultPokemon)
-      fetchPokemonDetails(defaultPokemon)
+    const pokemonPromises = data.results.map((pokemon) => {
+      const id = getIdFromUrl(pokemon.url)
+      return {
+        id,
+        pokedexNumber: id,
+        name: pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1),
+        sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
+        types: [],
+      }
+    })
+
+    pokemonList.value = await Promise.all(pokemonPromises)
+
+    if (!isMobileView.value) {
+      // Select random by default
+      const randomNumber = Math.floor(Math.random() * limit) + 1
+      const defaultPokemon = pokemonList.value.find(pokemon => pokemon.id === randomNumber)
+      if (defaultPokemon)
+        fetchPokemonDetails(defaultPokemon)
+    }
+
+    await getAllTypes()
   }
-  getAllTypes()
+  catch (error) {
+    console.error('Error fetching Pokemon list:', error)
+  }
+  finally {
+    isLoadingList.value = false
+  }
 }
 
 async function fetchPokemonDetails(pokemon) {
@@ -170,10 +183,10 @@ const filteredPokemonList = computed(() => {
 })
 
 function selectPokemon(pokemon) {
+  const pokemonDetails = document.querySelector('.pokemon-details')
   fetchPokemonDetails(pokemon)
   if (isMobileView.value)
-    document.body.classList.add('scroll-lock')
-  const pokemonDetails = document.querySelector('.pokemon-details')
+    body.classList.add('scroll-lock')
   if (pokemonDetails && isMobileView.value)
     pokemonDetails.scrollTop = 0
 }
@@ -181,7 +194,7 @@ function selectPokemon(pokemon) {
 function closePokemonDetails() {
   closingPokemonDetails.value = true
   if (isMobileView.value)
-    document.body.classList.remove('scroll-lock')
+    body.classList.remove('scroll-lock')
   setTimeout(() => {
     if (closingPokemonDetails.value) {
       selectedPokemon.value = null
@@ -191,7 +204,6 @@ function closePokemonDetails() {
 }
 
 function toggleBodyCursor() {
-  const body = document.body
   isLoadingDetail.value ? body.classList.add('loading-cursor') : body.classList.remove('loading-cursor')
 }
 
