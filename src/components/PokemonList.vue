@@ -1,7 +1,7 @@
 <script setup>
 import { typeInfos } from '~/modules/typeinfos'
 
-const limit = 151
+const limit = 1017
 const offset = 0
 const searchQuery = ref('')
 const pokemonList = ref([])
