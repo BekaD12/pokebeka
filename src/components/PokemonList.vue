@@ -21,6 +21,21 @@ function getIdFromUrl(url) {
   return Number.parseInt(parts[parts.length - 2])
 }
 
+function toggleBodyCursor() {
+  isLoadingDetail.value ? body.classList.add('loading-cursor') : body.classList.remove('loading-cursor')
+}
+
+// search logic
+const filteredPokemonList = computed(() => {
+  const query = searchQuery.value.toLowerCase()
+  return pokemonList.value.filter(
+    pokemon =>
+      pokemon.name.toLowerCase().includes(query)
+      || pokemon.pokedexNumber.toString().includes(query)
+      || pokemon.types.some(type => type.toLowerCase().includes(query)),
+  )
+})
+
 async function fetchPokemonList() {
   isLoadingList.value = true
   try {
@@ -58,6 +73,38 @@ async function fetchPokemonList() {
   }
 }
 
+async function getAllTypes() {
+  isLoadingList.value = true
+
+  const response = await fetch('https://pokeapi.co/api/v2/type')
+  const typesData = await response.json()
+
+  const typePromises = typesData.results.map(async (type) => {
+    const typeResponse = await fetch(type.url)
+    const typeData = await typeResponse.json()
+
+    const typeName = typeData.name
+    const typePokemons = typeData.pokemon.map((pokemon) => {
+      return {
+        id: getIdFromUrl(pokemon.pokemon.url),
+        name: pokemon.pokemon.name.charAt(0).toUpperCase() + pokemon.pokemon.name.slice(1),
+      }
+    })
+    return { name: typeName, pokemons: typePokemons }
+  })
+
+  const typeList = await Promise.all(typePromises)
+
+  for (const type of typeList) {
+    for (const pokemon of pokemonList.value) {
+      const matchingPokemon = type.pokemons.find(p => p.name === pokemon.name)
+      if (matchingPokemon)
+        pokemon.types.push(type.name)
+    }
+  }
+  isLoadingList.value = false
+}
+
 async function fetchPokemonDetails(pokemon) {
   isLoadingDetail.value = true
 
@@ -76,30 +123,6 @@ async function fetchPokemonDetails(pokemon) {
   const responseEvolutions = await fetch(speciesData.evolution_chain.url)
   const evolutionChain = await responseEvolutions.json()
 
-  function getEvolutionChain(evolution) {
-    const chains = []
-
-    function traverseEvolution(evolution) {
-      if (!evolution)
-        return
-
-      const id = getIdFromUrl(evolution.species.url)
-      const name = evolution.species.name
-      const evolutionDetails = evolution.evolution_details[0]
-      const minLevel = evolutionDetails?.min_level || ''
-      const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getIdFromUrl(evolution.species.url)}.png`
-
-      chains.push({ id, name, minLevel, sprite })
-
-      if (evolution.evolves_to.length > 0) {
-        evolution.evolves_to.forEach((evo) => {
-          traverseEvolution(evo)
-        })
-      }
-    }
-    traverseEvolution(evolution)
-    return chains
-  }
   const evolution = getEvolutionChain(evolutionChain.chain)
 
   const abilitiesData = await Promise.all(
@@ -139,48 +162,30 @@ async function fetchPokemonDetails(pokemon) {
   isLoadingDetail.value = false
 }
 
-async function getAllTypes() {
-  isLoadingList.value = true
+function getEvolutionChain(evolution) {
+  const chains = []
 
-  const response = await fetch('https://pokeapi.co/api/v2/type')
-  const typesData = await response.json()
+  function traverseEvolution(evolution) {
+    if (!evolution)
+      return
 
-  const typePromises = typesData.results.map(async (type) => {
-    const typeResponse = await fetch(type.url)
-    const typeData = await typeResponse.json()
+    const id = getIdFromUrl(evolution.species.url)
+    const name = evolution.species.name
+    const evolutionDetails = evolution.evolution_details[0]
+    const minLevel = evolutionDetails?.min_level || ''
+    const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getIdFromUrl(evolution.species.url)}.png`
 
-    const typeName = typeData.name
-    const typePokemons = typeData.pokemon.map((pokemon) => {
-      return {
-        id: getIdFromUrl(pokemon.pokemon.url),
-        name: pokemon.pokemon.name.charAt(0).toUpperCase() + pokemon.pokemon.name.slice(1),
-      }
-    })
-    return { name: typeName, pokemons: typePokemons }
-  })
+    chains.push({ id, name, minLevel, sprite })
 
-  const typeList = await Promise.all(typePromises)
-
-  for (const type of typeList) {
-    for (const pokemon of pokemonList.value) {
-      const matchingPokemon = type.pokemons.find(p => p.name === pokemon.name)
-      if (matchingPokemon)
-        pokemon.types.push(type.name)
+    if (evolution.evolves_to.length > 0) {
+      evolution.evolves_to.forEach((evo) => {
+        traverseEvolution(evo)
+      })
     }
   }
-  isLoadingList.value = false
+  traverseEvolution(evolution)
+  return chains
 }
-
-// search logic
-const filteredPokemonList = computed(() => {
-  const query = searchQuery.value.toLowerCase()
-  return pokemonList.value.filter(
-    pokemon =>
-      pokemon.name.toLowerCase().includes(query)
-      || pokemon.pokedexNumber.toString().includes(query)
-      || pokemon.types.some(type => type.toLowerCase().includes(query)),
-  )
-})
 
 function selectPokemon(pokemon) {
   const pokemonDetails = document.querySelector('.pokemon-details')
@@ -201,10 +206,6 @@ function closePokemonDetails() {
       closingPokemonDetails.value = false
     }
   }, 800)
-}
-
-function toggleBodyCursor() {
-  isLoadingDetail.value ? body.classList.add('loading-cursor') : body.classList.remove('loading-cursor')
 }
 
 watch(isLoadingDetail, () => {
